@@ -1,0 +1,12 @@
+.git
+.env
+.cache
+.venv*
+frontend/node_modules
+frontend/dist
+ml/data/raw
+ml/data/processed
+ml/artifacts/*.joblib
+mlruns
+__pycache__
+.pytest_cache

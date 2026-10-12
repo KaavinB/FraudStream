@@ -1,0 +1,145 @@
+name: fraudstream
+services:
+  kafka:
+    image: apache/kafka:4.1.2
+    ports: ["127.0.0.1:9092:9092"]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_HEAP_OPTS: -Xmx512m -Xms256m
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    volumes: ["kafka-data:/var/lib/kafka/data"]
+    healthcheck:
+      test: ["CMD", "/opt/kafka/bin/kafka-topics.sh", "--bootstrap-server", "localhost:29092", "--list"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    mem_limit: 1g
+  topics:
+    image: apache/kafka:4.1.2
+    depends_on:
+      kafka: {condition: service_healthy}
+    environment:
+      PARTITIONS: ${KAFKA_PARTITIONS:-1}
+    entrypoint: ["/bin/bash", "-ec"]
+    command:
+      - |
+        for topic in transactions.raw transactions.scored fraud.alerts transactions.dead-letter fraud.labels; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create --if-not-exists --topic "$$topic" --partitions "$$PARTITIONS" --replication-factor 1
+        done
+  postgres:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_USER: fraudstream
+      POSTGRES_DB: fraudstream
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make setup}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fraudstream -d fraudstream"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 768m
+  redis:
+    image: redis:7.4.6-bookworm
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "always", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    ports: ["127.0.0.1:6379:6379"]
+    volumes: ["redis-data:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 384m
+  inference:
+    build:
+      context: .
+      dockerfile: services/inference/Dockerfile
+    volumes: ["./ml/artifacts:/app/ml/artifacts:ro"]
+    ports: ["127.0.0.1:8001:8001"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/ready',timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 768m
+  ingestion:
+    build: {context: ., dockerfile: Dockerfile.backend, args: {SERVICE: ingestion}}
+    environment: &backend
+      DATABASE_URL: postgres://fraudstream:${POSTGRES_PASSWORD}@postgres:5432/fraudstream?sslmode=disable
+      KAFKA_BROKERS: kafka:29092
+      REDIS_URL: redis://redis:6379
+      INFERENCE_URL: http://inference:8001
+      API_KEY: ${API_KEY:?run make setup}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
+      INGESTION_CONCURRENCY: ${INGESTION_CONCURRENCY:-128}
+      RATE_LIMIT: ${RATE_LIMIT:-10000}
+      KAFKA_SESSION_TIMEOUT_MS: ${KAFKA_SESSION_TIMEOUT_MS:-6000}
+    depends_on:
+      topics: {condition: service_completed_successfully}
+      postgres: {condition: service_healthy}
+    ports: ["127.0.0.1:8080:8080"]
+    volumes:
+      - ./ml/artifacts:/ml/artifacts:ro
+      - ./benchmarks/results:/benchmarks/results:ro
+    restart: on-failure
+    mem_limit: 256m
+  processor:
+    build: {context: ., dockerfile: Dockerfile.backend, args: {SERVICE: processor}}
+    environment: *backend
+    depends_on:
+      topics: {condition: service_completed_successfully}
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      inference: {condition: service_healthy}
+    restart: on-failure
+    mem_limit: 384m
+  alerts:
+    build: {context: ., dockerfile: Dockerfile.backend, args: {SERVICE: alerts}}
+    environment: *backend
+    depends_on:
+      topics: {condition: service_completed_successfully}
+      postgres: {condition: service_healthy}
+    restart: on-failure
+    mem_limit: 192m
+  dashboard:
+    build: {context: frontend}
+    ports: ["127.0.0.1:5173:80"]
+    depends_on: [ingestion]
+    mem_limit: 128m
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: [monitoring]
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes: ["./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    ports: ["127.0.0.1:9090:9090"]
+    mem_limit: 384m
+  grafana:
+    image: grafana/grafana:12.1.1
+    profiles: [monitoring]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${POSTGRES_PASSWORD:?run make setup}
+    volumes:
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["127.0.0.1:3000:3000"]
+    mem_limit: 256m
+volumes:
+  kafka-data:
+  postgres-data:
+  redis-data:

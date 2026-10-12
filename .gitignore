@@ -1,0 +1,26 @@
+.env
+.venv*/
+.cache/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+*.egg-info/
+.coverage
+ml/data/raw/
+ml/data/processed/
+ml/artifacts/*.joblib
+ml/artifacts/*.ubj
+mlruns/
+*.log
+bin/
+.DS_Store
+mlflow.db
+
+# Personal interview/resume prep and working notes (kept locally, never committed)
+docs/INTERVIEW_GUIDE.md
+docs/RESUME_METRICS.md
+docs/PROGRESS.md

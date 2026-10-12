@@ -1,0 +1,11 @@
+FROM python:3.12-slim-bookworm
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml ./
+RUN pip install --no-cache-dir .
+COPY ml ./ml
+COPY services/inference ./services/inference
+RUN useradd --uid 10001 --create-home service
+USER service
+CMD ["python", "-m", "uvicorn", "services.inference.app.main:app", "--host", "0.0.0.0", "--port", "8001"]

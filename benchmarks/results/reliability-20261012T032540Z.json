@@ -1,0 +1,99 @@
+{
+  "experiment_id": "reliability-20261012T032540Z",
+  "date": "2026-10-12T03:25:40.472819+00:00",
+  "git_commit": "unavailable-no-git",
+  "source_sha256": "ab6fae1427cc7391d1f6ea7f4d223f0b64e237a616c628a24c8bebe86b44be9d",
+  "seed": 42,
+  "hardware": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 10,
+    "memory_bytes": null
+  },
+  "software": {
+    "python": "3.12.15",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1",
+    "fastapi": "0.141.1"
+  },
+  "cpu_limits": {
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null
+  },
+  "status": "failed",
+  "scenarios": [
+    {
+      "scenario": "before_features",
+      "transaction_id": "integration-c8c4bba74ffb-before_features",
+      "recovery_seconds": 45.260472957990714,
+      "total_seconds": 45.597162374993786,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_feature_intent",
+      "transaction_id": "integration-c8c4bba74ffb-after_feature_intent",
+      "recovery_seconds": 45.44748770899605,
+      "total_seconds": 45.54718158299511,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_features",
+      "transaction_id": "integration-c8c4bba74ffb-after_features",
+      "recovery_seconds": 45.39556612499291,
+      "total_seconds": 45.49877054199169,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "before_inference",
+      "transaction_id": "integration-c8c4bba74ffb-before_inference",
+      "recovery_seconds": 45.44014129099378,
+      "total_seconds": 45.528725707990816,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_inference",
+      "transaction_id": "integration-c8c4bba74ffb-after_inference",
+      "recovery_seconds": 45.25348358300107,
+      "total_seconds": 45.538445208992925,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_persistence",
+      "transaction_id": "integration-c8c4bba74ffb-after_persistence",
+      "recovery_seconds": 9.253625124998507,
+      "total_seconds": 9.528629959007958,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    }
+  ],
+  "smoke": {
+    "unique_decisions": 1,
+    "duplicates_submitted": 1,
+    "late_events_quarantined": 1
+  },
+  "error": "configured crash point did not execute: before_offset_commit",
+  "label": "Before the consumer session-timeout fix: crashed members held partitions for the 45s franz-go default."
+}

@@ -1,0 +1,12 @@
+{
+  "title": "FraudStream Operations", "uid": "fraudstream", "schemaVersion": 40,
+  "refresh": "5s", "time": {"from": "now-15m", "to": "now"},
+  "panels": [
+    {"id":1,"title":"Accepted requests vs completed attempts / sec","type":"timeseries","gridPos":{"x":0,"y":0,"w":12,"h":8},"datasource":{"uid":"prometheus"},"targets":[{"expr":"sum by (stage,outcome) (rate(fraudstream_events_total{outcome=~\"accepted|completed\"}[1m]))"}]},
+    {"id":2,"title":"Stage latency p95 (seconds)","type":"timeseries","gridPos":{"x":12,"y":0,"w":12,"h":8},"datasource":{"uid":"prometheus"},"targets":[{"expr":"histogram_quantile(0.95,sum by (le,stage)(rate(fraudstream_stage_seconds_bucket[1m])))"}]},
+    {"id":3,"title":"Consumer lag (last polled sample)","type":"timeseries","gridPos":{"x":0,"y":8,"w":12,"h":8},"datasource":{"uid":"prometheus"},"targets":[{"expr":"fraudstream_consumer_lag"}]},
+    {"id":4,"title":"Retries, quarantine and duplicates","type":"timeseries","gridPos":{"x":12,"y":8,"w":12,"h":8},"datasource":{"uid":"prometheus"},"targets":[{"expr":"sum by(outcome)(rate(fraudstream_events_total{outcome=~\"retry|quarantine|duplicate|error\"}[1m]))"}]},
+    {"id":5,"title":"Risk score histogram","type":"timeseries","gridPos":{"x":0,"y":16,"w":12,"h":8},"datasource":{"uid":"prometheus"},"targets":[{"expr":"rate(fraudstream_risk_score_bucket[1m])"}]},
+    {"id":6,"title":"Real model compute p95 (seconds)","type":"timeseries","gridPos":{"x":12,"y":16,"w":12,"h":8},"datasource":{"uid":"prometheus"},"targets":[{"expr":"histogram_quantile(.95,sum by(le)(rate(fraudstream_inference_seconds_bucket[1m])))"}]}
+  ]
+}

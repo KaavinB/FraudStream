@@ -1,0 +1,82 @@
+{
+  "experiment_id": "pipeline-drain-20261012T035001Z",
+  "date": "2026-10-12T03:50:01.963927+00:00",
+  "git_commit": "unavailable-no-git",
+  "source_sha256": "4ee829d6f40e4a04fba7375ca1411029d5dae862860f742e2ed7c0144be440d3",
+  "seed": 42,
+  "hardware": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 10,
+    "memory_bytes": null
+  },
+  "software": {
+    "python": "3.12.15",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1",
+    "fastapi": "0.141.1"
+  },
+  "cpu_limits": {
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null
+  },
+  "status": "executed",
+  "actual_ml_inference": true,
+  "mock_inference": false,
+  "synthetic_transaction_data": true,
+  "kafka_partitions": 1,
+  "consumer_workers": 1,
+  "model_version": "hist_gradient_boosting-handbook-inspired-v1-af87b7f48a1a",
+  "dataset_version": "handbook-inspired-v1-af87b7f48a1a",
+  "mode": "drain",
+  "workload": "Original amounts/entities, unique IDs, same wall-clock event timestamp per trial; drain: unpolled submission, completion from aggregate decision counter (0.1s resolution)",
+  "conditions": {
+    "compose_resource_limits": "docker-compose.yml",
+    "partition_count_source": "operator-declared; verify before comparison"
+  },
+  "trials": [
+    {
+      "repetition": 0,
+      "mode": "drain",
+      "concurrency": 50,
+      "transaction_count": 2000,
+      "submission_seconds": 5.682193375003408,
+      "accepted_requests_per_second": 351.97675756657975,
+      "elapsed_seconds": 18.649126666001393,
+      "completed_unique_decisions": 2000,
+      "completed_unique_decisions_per_second": 107.24362785556784,
+      "counter_poll_interval_s": 0.1,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "repetition": 1,
+      "mode": "drain",
+      "concurrency": 50,
+      "transaction_count": 2000,
+      "submission_seconds": 5.867304583007353,
+      "accepted_requests_per_second": 340.8720259371429,
+      "elapsed_seconds": 19.205133499999647,
+      "completed_unique_decisions": 2000,
+      "completed_unique_decisions_per_second": 104.13882309123427,
+      "counter_poll_interval_s": 0.1,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "repetition": 2,
+      "mode": "drain",
+      "concurrency": 50,
+      "transaction_count": 2000,
+      "submission_seconds": 5.84025091699732,
+      "accepted_requests_per_second": 342.4510399337895,
+      "elapsed_seconds": 18.827032333996613,
+      "completed_unique_decisions": 2000,
+      "completed_unique_decisions_per_second": 106.23023132480269,
+      "counter_poll_interval_s": 0.1,
+      "error_count": 0,
+      "errors": []
+    }
+  ],
+  "label": "A/B baseline: previous worker build that synchronously committed the Kafka offset after every record (1 partition, 1 worker)."
+}

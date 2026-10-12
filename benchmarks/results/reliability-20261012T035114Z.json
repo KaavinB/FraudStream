@@ -1,0 +1,119 @@
+{
+  "experiment_id": "reliability-20261012T035114Z",
+  "date": "2026-10-12T03:51:14.726240+00:00",
+  "git_commit": "unavailable-no-git",
+  "source_sha256": "4ee829d6f40e4a04fba7375ca1411029d5dae862860f742e2ed7c0144be440d3",
+  "seed": 42,
+  "hardware": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 10,
+    "memory_bytes": null
+  },
+  "software": {
+    "python": "3.12.15",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1",
+    "fastapi": "0.141.1"
+  },
+  "cpu_limits": {
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null
+  },
+  "status": "passed",
+  "scenarios": [
+    {
+      "scenario": "before_features",
+      "transaction_id": "integration-0080aa5aef86-before_features",
+      "recovery_seconds": 6.363707124997745,
+      "total_seconds": 6.4598014160001185,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_feature_intent",
+      "transaction_id": "integration-0080aa5aef86-after_feature_intent",
+      "recovery_seconds": 6.1447314160031965,
+      "total_seconds": 6.4258434170042165,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_features",
+      "transaction_id": "integration-0080aa5aef86-after_features",
+      "recovery_seconds": 6.324942582999938,
+      "total_seconds": 6.625681541991071,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "before_inference",
+      "transaction_id": "integration-0080aa5aef86-before_inference",
+      "recovery_seconds": 7.319627542005037,
+      "total_seconds": 7.64429279199976,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_inference",
+      "transaction_id": "integration-0080aa5aef86-after_inference",
+      "recovery_seconds": 6.627248541000881,
+      "total_seconds": 6.913910666000447,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "after_persistence",
+      "transaction_id": "integration-0080aa5aef86-after_persistence",
+      "recovery_seconds": 6.113844874998904,
+      "total_seconds": 6.385042499998235,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "before_offset_commit",
+      "transaction_id": "integration-0080aa5aef86-before_offset_commit",
+      "recovery_seconds": 6.734077207991504,
+      "total_seconds": 7.014623791008489,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    },
+    {
+      "scenario": "during_alert_publication",
+      "transaction_id": "integration-0080aa5aef86-during_alert_publication",
+      "recovery_seconds": 6.146334791992558,
+      "total_seconds": 6.438685583998449,
+      "expected_events": 1,
+      "missing_durable_decisions": 0,
+      "duplicate_durable_decisions": 0,
+      "duplicate_logical_alerts": 0,
+      "logical_alert_count": 1
+    }
+  ],
+  "smoke": {
+    "unique_decisions": 1,
+    "duplicates_submitted": 1,
+    "late_events_quarantined": 1
+  }
+}

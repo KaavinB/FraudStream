@@ -1,0 +1,27 @@
+{
+  "experiment_id": "reliability-20261012T040104Z",
+  "date": "2026-10-12T04:01:04.329149+00:00",
+  "git_commit": "unavailable-no-git",
+  "source_sha256": "dab2b2f648a67b147f99913c976f1987b84a074336c5190f33adf63955fcb7b4",
+  "seed": 42,
+  "hardware": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 10,
+    "memory_bytes": null
+  },
+  "software": {
+    "python": "3.12.15",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1",
+    "fastapi": "0.141.1"
+  },
+  "cpu_limits": {
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null
+  },
+  "status": "failed",
+  "scenarios": [],
+  "error": "late event was not durably quarantined",
+  "label": "Exposed quarantine loss after Kafka offset reuse (topic recreated); fixed by migration 002."
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fraudstream.local/transaction.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "transaction_id", "source_event_id", "customer_id", "merchant_id", "amount", "currency", "transaction_type", "timestamp"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "transaction_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,96}$"},
+    "source_event_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,96}$"},
+    "customer_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,96}$"},
+    "merchant_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,96}$"},
+    "amount": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000000},
+    "currency": {"const": "USD"},
+    "transaction_type": {"const": "PAYMENT"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "device_id": {"type": "string", "maxLength": 96}
+  }
+}
